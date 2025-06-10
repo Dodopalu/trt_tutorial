@@ -110,8 +110,9 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         builder.max_batch_size = batch_size
 
         # setting for pruning optimization
-        config.set_flag(trt.BuilderFlag.TF32)
-        config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
+        #config.set_flag(trt.BuilderFlag.TF32)
+        #config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
+        config.set_flag(trt.BuilderFlag.FP16)
 
         config.max_workspace_size = (1 << 33)
         with open(onnx_path, 'rb') as model:
@@ -150,7 +151,6 @@ TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 
 onnx_path = 'ResNet20_op11.onnx'
-onnx_path = '0center-gpu-opset11.onnx'
 engine_name = 'ResNet20_op11.plan'
 model = ModelProto()
 batch_size = 2024
