@@ -122,6 +122,7 @@ d1 = model.graph.input[0].type.tensor_type.shape.dim[2].dim_value
 d2 = model.graph.input[0].type.tensor_type.shape.dim[3].dim_value
 
 shape = [batch_size , d0, d1, d2]
+print(shape)
 
 with (
     trt.Builder(TRT_LOGGER) as builder, 
@@ -191,6 +192,8 @@ for i in range(iters):
     
     pred_list = np.reshape(pred_list, (len(pred_list), 2))
     
+print("Inference completed.")
+print("Total time for inference: ", total_time)
 print(pred_list[:10] + 0.5)
 print()
 print(ploc[:10] + 0.5)
