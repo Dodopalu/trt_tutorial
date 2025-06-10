@@ -100,7 +100,7 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output, strea
 def create_engine(TRT_LOGGER, onnx_path, shape):
 
     batch_size = shape[0]
-
+    print("Creating TensorRT engine from ONNX model: "+ onnx_path)
     with (
         trt.Builder(TRT_LOGGER) as builder, 
         builder.create_network(1) as network, 
