@@ -156,6 +156,8 @@ iters = 20
 total_time = 0.0
 
 print("Input tensor type: ", type(input_tensor))
+print("Input tensor shape: ", input_tensor.shape)
+print("Input tensor dtype: ", input_tensor.dtype)
 print("\n\n\n\n\n\n")
 chunks = 0
 if batch_size < 13799:
