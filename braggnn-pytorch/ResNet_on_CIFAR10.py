@@ -144,6 +144,7 @@ def load() -> np.ndarray:
     return np_dataset
 
 dataset = load()
+print("Dataset loaded with shape: ", dataset.shape)
 
 #build engine instead of loading
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
