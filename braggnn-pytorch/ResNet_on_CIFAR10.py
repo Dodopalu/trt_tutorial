@@ -151,7 +151,6 @@ TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 
 onnx_path = 'ResNet20_op11.onnx'
-onnx_path = '0center-gpu-opset11.onnx'
 engine_name = 'ResNet20_op11.plan'
 model = ModelProto()
 batch_size = 2024
@@ -162,8 +161,9 @@ d0 = model.graph.input[0].type.tensor_type.shape.dim[1].dim_value
 d1 = model.graph.input[0].type.tensor_type.shape.dim[2].dim_value
 d2 = model.graph.input[0].type.tensor_type.shape.dim[3].dim_value
 
-shape = [batch_size , d0, d1, d2]
+shape = [batch_size, d0, d1, d2]
 print(shape)
+
 
 engine = create_engine(TRT_LOGGER, onnx_path, shape)
 print("TensorRT engine created.")
@@ -176,6 +176,7 @@ h_input_1, d_input_1, h_output, d_output, stream = allocate_buffers(engine, batc
 print("Buffers allocated.")
 
 
+'''
 iters = 20
 total_time = 0.0
 
@@ -227,3 +228,4 @@ print("Inference completed.")
 print("Total time: ", total_time)
 print(pred_list[:10] + 0.5)
 print("TRT: ", total_time/iters)
+'''
