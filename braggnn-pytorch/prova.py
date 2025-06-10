@@ -10,6 +10,7 @@ import torch
 
 path = 'ResNet20.th'
 model = torch.jit.load(path)
+model.eval()
 
 input_tensor = torch.randn(None, 3, 32, 32)  # Example input tensor for ResNet20
 
