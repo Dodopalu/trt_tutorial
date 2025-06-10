@@ -97,6 +97,22 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output, strea
 
 print("Loading TensorRT engine...")
 
+def create_engine(TRT_LOGGER, onnx_path, shape):
+    with (
+        trt.Builder(TRT_LOGGER) as builder, 
+        builder.create_network(1) as network, 
+        builder.create_builder_config() as config, 
+        trt.OnnxParser(network, TRT_LOGGER) as parser
+    ):
+        builder.max_batch_size = shape[0]
+        config.set_flag(trt.BuilderFlag.FP16)
+        config.max_workspace_size = (1 << 33)
+        with open(onnx_path, 'rb') as model:
+            parser.parse(model.read())
+        network.get_input(0).shape = [batch_size] + [dim.dim_value for dim in network.get_input(0).shape]
+        engine = builder.build_engine(network, config)
+    return engine
+
 with h5py.File("./valid-ds-psz11-new.h5", 'r') as fp:
     patch = fp['patch'][:]
     ploc  = fp['ploc'][:] - 0.5
@@ -124,19 +140,7 @@ d2 = model.graph.input[0].type.tensor_type.shape.dim[3].dim_value
 shape = [batch_size , d0, d1, d2]
 print(shape)
 
-with (
-    trt.Builder(TRT_LOGGER) as builder, 
-    builder.create_network(1) as network, 
-    builder.create_builder_config() as config, 
-    trt.OnnxParser(network, TRT_LOGGER) as parser
-      ):
-       builder.max_batch_size = 16384
-       config.set_flag(trt.BuilderFlag.FP16)
-       config.max_workspace_size = (1 << 33)
-       with open(onnx_path, 'rb') as model:
-           parser.parse(model.read())
-       network.get_input(0).shape = shape
-       engine = builder.build_engine(network, config)
+engine = create_engine(TRT_LOGGER, onnx_path, shape)
 
 print("TensorRT engine loaded.")
 print("Engine input shape: ", engine.get_binding_shape(0))
@@ -202,34 +206,4 @@ print(ploc[:10] + 0.5)
 l2norm_ml = np.sqrt(np.sum((ploc - pred_list[:13799])**2, axis=1)) * 11
 print("Error in pixel of %d samples for TRT: Avg: %.3f, 50th: %.3f, 75th: %.3f, 95th: %.3f, 99.5th: %.3f" % ((l2norm_ml.shape[0], l2norm_ml.mean(), ) + tuple(np.percentile(l2norm_ml, (50, 75, 95, 99.5))) )) 
 
-
-# idx = 11700
-
-# pred = pred_list[idx]
-
-# plt.figure(figsize=(5,5))
-# plt.imshow(input_tensor[idx].reshape(11, 11), cmap='nipy_spectral')
-# actual = (ploc[idx] + 0.5) * 11
-# aim_len = 2.5
-
-# x = actual[0]
-# y = actual[1]
-# plt.plot((x, x), (y-aim_len, y+aim_len), '--', color='white', linewidth=2)
-# plt.plot((x-aim_len, x+aim_len), (y, y), '--', color='white', linewidth=2)
-
-# x_pred = (pred[0] + 0.5) * 11
-# y_pred = (pred[1] + 0.5) * 11
-# plt.plot((x_pred, x_pred), (y_pred-aim_len, y_pred+aim_len), '--', color='gold', linewidth=1)
-# plt.plot((x_pred-aim_len, x_pred+aim_len), (y_pred, y_pred), '--', color='gold', linewidth=1)
-
-
-# plt.text(1.9, 0.8, "Truth:       (" + str(f"{actual[0]:.2f}") + ", " + str(f"{actual[1]:.2f}") + ")", color='white', bbox=dict(fill=False, edgecolor=None, linewidth=0), fontsize = 'large')
-# plt.text(1.9, 1.8, " TRT:          (" + str(f"{x_pred:.2f}") + ", " + str(f"{y_pred:.2f}") + ")", color='yellow', bbox=dict(fill=False, edgecolor=None, linewidth=0), fontsize = 'large')
-
-# plt.margins(0,0)
-# plt.savefig('TRT_plot_FP16_new.png', bbox_inches='tight')
-# plt.show()
-# plt.close()
-
 print("TRT: ", total_time/iters)
-# print(pred * 11)
