@@ -122,7 +122,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
 
 # Load the dataset as a np array
 
-'''
+
 def load() -> np.ndarray:
 
     (train_images, train_labels), (test_images, test_labels) = keras.datasets.cifar10.load_data()
@@ -146,7 +146,7 @@ def load() -> np.ndarray:
 
 dataset = load()
 print("Dataset loaded with shape: ", dataset.shape)
-'''
+
 
 #build engine instead of loading
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
