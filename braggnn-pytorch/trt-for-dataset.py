@@ -93,6 +93,8 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output, strea
        # print(type(out))
        return out
 
+print("Loading TensorRT engine...")
+
 with h5py.File("./valid-ds-psz11-new.h5", 'r') as fp:
     patch = fp['patch'][:]
     ploc  = fp['ploc'][:] - 0.5
