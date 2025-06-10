@@ -113,6 +113,7 @@ trt_runtime = trt.Runtime(TRT_LOGGER)
 onnx_path = '0center-gpu-opset11.onnx'
 engine_name = '0center-gpu-opset11_16384_FP16_TRT7.plan'
 model = ModelProto()
+batch_size = 16384
 with open(onnx_path, "rb") as f:
     model.ParseFromString(f.read())
 
