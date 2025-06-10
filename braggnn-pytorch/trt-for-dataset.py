@@ -3,6 +3,7 @@ import tensorrt as trt
 import os
 import time
 import h5py
+from onnx import ModelProto
 # import torch
 # from torch import nn
 # from model import BraggNN
@@ -104,7 +105,36 @@ input_tensor = patch
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
-engine = load_engine(trt_runtime, '0center-gpu-opset11_16384_FP16_TRT7.plan')
+
+#engine = load_engine(trt_runtime, '0center-gpu-opset11_16384_FP16_TRT7.plan')
+
+
+#build engine instead of loading
+onnx_path = '0center-gpu-opset11.onnx'
+engine_name = '0center-gpu-opset11_16384_FP16_TRT7.plan'
+model = ModelProto()
+with open(onnx_path, "rb") as f:
+    model.ParseFromString(f.read())
+
+d0 = model.graph.input[0].type.tensor_type.shape.dim[1].dim_value
+d1 = model.graph.input[0].type.tensor_type.shape.dim[2].dim_value
+d2 = model.graph.input[0].type.tensor_type.shape.dim[3].dim_value
+
+shape = [batch_size , d0, d1, d2]
+
+with (
+    trt.Builder(TRT_LOGGER) as builder, 
+    builder.create_network(1) as network, 
+    builder.create_builder_config() as config, 
+    trt.OnnxParser(network, TRT_LOGGER) as parser
+      ):
+       builder.max_batch_size = 16384
+       config.set_flag(trt.BuilderFlag.FP16)
+       config.max_workspace_size = (1 << 33)
+       with open(onnx_path, 'rb') as model:
+           parser.parse(model.read())
+       network.get_input(0).shape = shape
+       engine = builder.build_engine(network, config)
 
 print("TensorRT engine loaded.")
 print("Engine input shape: ", engine.get_binding_shape(0))
