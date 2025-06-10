@@ -114,7 +114,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         engine = builder.build_engine(network, config)
     return engine
 
-
+# Load the dataset as a np array
 with h5py.File("./valid-ds-psz11-new.h5", 'r') as fp:
     patch = fp['patch'][:]
     ploc  = fp['ploc'][:] - 0.5
