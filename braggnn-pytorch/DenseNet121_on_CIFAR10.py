@@ -115,6 +115,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         with open(onnx_path, 'rb') as model:
             parser.parse(model.read())
         network.get_input(0).shape = shape
+        print("Building TensorRT engine...")
         engine = builder.build_engine(network, config)
     return engine
 
