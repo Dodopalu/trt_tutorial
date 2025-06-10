@@ -105,9 +105,13 @@ TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 engine = load_engine(trt_runtime, '0center-gpu-opset11_16384_FP16_TRT7.plan')
 
+print("TensorRT engine loaded.")
+print("Engine input shape: ", engine.get_binding_shape(0))
+print("Engine output shape: ", engine.get_binding_shape(1))
+print("Allocating buffers...")
 batch_size = 16384
 h_input_1, d_input_1, h_output, d_output, stream = allocate_buffers(engine, batch_size, trt.float32)
-
+print("Buffers allocated.")
 
 iters = 20
 total_time = 0.0
