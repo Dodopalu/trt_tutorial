@@ -108,6 +108,8 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         trt.OnnxParser(network, TRT_LOGGER) as parser
     ):
         builder.max_batch_size = batch_size
+
+        # setting for pruning optimization
         config.set_flag(trt.BuilderFlag.TF32)
         config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
 
@@ -148,6 +150,7 @@ TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 
 onnx_path = 'ResNet20.onnx'
+engine_name = 'ResNet20.plan'
 model = ModelProto()
 batch_size = 2024
 with open(onnx_path, "rb") as f:
