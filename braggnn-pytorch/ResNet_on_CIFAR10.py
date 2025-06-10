@@ -153,7 +153,6 @@ TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 
 onnx_path = 'ResNet20_op11.onnx'
-onnx_path = '0center-gpu-opset11.onnx'
 engine_name = 'ResNet20_op11.plan'
 model = ModelProto()
 batch_size = 2024
