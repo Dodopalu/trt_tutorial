@@ -149,8 +149,8 @@ dataset = load()
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
 
-onnx_path = 'ResNet20.onnx'
-engine_name = 'ResNet20.plan'
+onnx_path = 'ResNet20_op11.onnx'
+engine_name = 'ResNet20_op11.plan'
 model = ModelProto()
 batch_size = 2024
 with open(onnx_path, "rb") as f:
