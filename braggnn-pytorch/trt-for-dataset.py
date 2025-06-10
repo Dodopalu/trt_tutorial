@@ -95,8 +95,6 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output, strea
        # print(type(out))
        return out
 
-print("Loading TensorRT engine...")
-
 def create_engine(TRT_LOGGER, onnx_path, shape):
 
     batch_size = shape[0]
@@ -116,6 +114,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         engine = builder.build_engine(network, config)
     return engine
 
+
 with h5py.File("./valid-ds-psz11-new.h5", 'r') as fp:
     patch = fp['patch'][:]
     ploc  = fp['ploc'][:] - 0.5
@@ -124,8 +123,6 @@ input_tensor = patch
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
-
-#engine = load_engine(trt_runtime, '0center-gpu-opset11_16384_FP16_TRT7.plan')
 
 
 #build engine instead of loading
@@ -144,18 +141,22 @@ shape = [batch_size , d0, d1, d2]
 print(shape)
 
 engine = create_engine(TRT_LOGGER, onnx_path, shape)
-
-print("TensorRT engine loaded.")
+print("TensorRT engine created.")
 print("Engine input shape: ", engine.get_binding_shape(0))
 print("Engine output shape: ", engine.get_binding_shape(1))
+
+
 print("Allocating buffers...")
 batch_size = 16384
 h_input_1, d_input_1, h_output, d_output, stream = allocate_buffers(engine, batch_size, trt.float32)
 print("Buffers allocated.")
 
+
 iters = 20
 total_time = 0.0
 
+print("Input tensor type: ", type(input_tensor))
+print("\n\n\n\n\n\n")
 chunks = 0
 if batch_size < 13799:
     chunks = len(input_tensor) // batch_size
