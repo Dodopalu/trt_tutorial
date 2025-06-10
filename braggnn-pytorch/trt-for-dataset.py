@@ -15,11 +15,11 @@ import pycuda.driver as cuda
 import pycuda.autoinit 
 
 def load_engine(trt_runtime, plan_path):
-   with open(plan_path, 'rb') as f:
-       engine_data = f.read()
+    with open(plan_path, 'rb') as f:
+        engine_data = f.read()
     print("Loading TensorRT engine from: ", plan_path)
-   engine = trt_runtime.deserialize_cuda_engine(engine_data)
-   return engine
+    engine = trt_runtime.deserialize_cuda_engine(engine_data)
+    return engine
 
 def allocate_buffers(engine, batch_size, data_type):
 
