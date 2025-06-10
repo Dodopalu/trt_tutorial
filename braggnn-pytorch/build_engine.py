@@ -5,7 +5,7 @@ import tensorrt as trt
  
 name = '0center-gpu-opset11' 
 engine_name = '{}_16384_FP16_TRT7.plan'.format(name)
-onnx_path = '/home/nikilr2/trt_tutorial/braggnn-pytorch/{}.onnx'.format(name)
+onnx_path = '/home/miele/trt_tutorial/braggnn-pytorch/{}.onnx'.format(name)
 batch_size = 16384
 
 model = ModelProto()
