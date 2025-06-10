@@ -98,13 +98,16 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output, strea
 print("Loading TensorRT engine...")
 
 def create_engine(TRT_LOGGER, onnx_path, shape):
+
+    batch_size = shape[0]
+
     with (
         trt.Builder(TRT_LOGGER) as builder, 
         builder.create_network(1) as network, 
         builder.create_builder_config() as config, 
         trt.OnnxParser(network, TRT_LOGGER) as parser
     ):
-        builder.max_batch_size = shape[0]
+        builder.max_batch_size = batch_size
         config.set_flag(trt.BuilderFlag.FP16)
         config.max_workspace_size = (1 << 33)
         with open(onnx_path, 'rb') as model:
