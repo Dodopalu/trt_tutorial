@@ -170,13 +170,12 @@ print("TensorRT engine created.")
 print("Engine input shape: ", engine.get_binding_shape(0))
 print("Engine output shape: ", engine.get_binding_shape(1))
 
-
+'''
 print("Allocating buffers...")
 h_input_1, d_input_1, h_output, d_output, stream = allocate_buffers(engine, batch_size, trt.float32)
 print("Buffers allocated.")
 
 
-'''
 iters = 20
 total_time = 0.0
 
