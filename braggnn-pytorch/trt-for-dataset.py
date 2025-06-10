@@ -112,7 +112,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         config.max_workspace_size = (1 << 33)
         with open(onnx_path, 'rb') as model:
             parser.parse(model.read())
-        network.get_input(0).shape = [batch_size] + [dim.dim_value for dim in network.get_input(0).shape]
+        network.get_input(0).shape = shape
         engine = builder.build_engine(network, config)
     return engine
 
