@@ -103,7 +103,7 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
     print("Creating TensorRT engine from ONNX model: "+ onnx_path)
     with (
         trt.Builder(TRT_LOGGER) as builder, 
-        builder.create_network(1) as network, 
+        builder.create_network(0) as network, 
         builder.create_builder_config() as config, 
         trt.OnnxParser(network, TRT_LOGGER) as parser
     ):
