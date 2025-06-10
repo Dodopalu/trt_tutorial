@@ -176,7 +176,7 @@ total_time = 0.0
 
 input_tensor = dataset[:49152] # 24 batches of 2048 samples
 chunks = 0
-if batch_size < 13799:
+if batch_size < 49152:
     chunks = len(input_tensor) // batch_size
     split_tensor = np.split(input_tensor[:batch_size*chunks], chunks, axis=0)
     print("Each chunk in the split tensor has shape: ", split_tensor[0].shape)
