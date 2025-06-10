@@ -108,8 +108,8 @@ def create_engine(TRT_LOGGER, onnx_path, shape):
         trt.OnnxParser(network, TRT_LOGGER) as parser
     ):
         builder.max_batch_size = batch_size
-        config.set_flag(trt.BuilderFlag.TF32)
-        #config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
+        config.set_flag(trt.BuilderFlag.FP16)
+        config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
 
         config.max_workspace_size = (1 << 33)
         with open(onnx_path, 'rb') as model:
